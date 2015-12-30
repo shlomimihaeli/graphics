@@ -1,0 +1,73 @@
+<html>
+	
+	<head>
+		<script src="js/Shapes.js"></script>
+		<script src="js/jquery-1.11.1.js"></script>
+		<script src="js/painter.js"></script>
+
+		<link rel="stylesheet" href="css/main.css" type="text/css" />
+	</head>
+	<body>
+
+		<input type="file" id="fileInput" style="position:absolute;right:0;top:10px;z-index:1000;"/>
+
+		
+		<div id="board" >
+			<div id="prev" class="prev" ></div>
+			<div id="canvas" ></div>
+		</div>
+		
+		<div style="display: block;" class="help" >
+			Select a shape on the left, and start drawing
+		</div>	
+		
+		<ul id="menu" >
+			<li class="static" >Shapes</li>
+			<li class="shape" shape="line" >Line
+				
+				<div class="help" >Press down + hold the left mouse key, and drag to create a line, release the key to draw.</div>	
+			</li>
+			<li class="shape" shape="circle" >Circle
+				<div class="help" >Press down + hold the left mouse key in the center of the circle, and drag to define your radius, release the key to draw.</div>
+			</li>	
+			<li class="shape" shape="curv" >Curv
+				<div class="help" >Click the mouse in 4 points (will be marked red) to determine the curv.</div>
+			</li>	
+			<li class="shape" shape="poligon" >Poligon
+				<div class="options" >
+					How many points? <input id="adj_num" type="number" value="5" />
+				</div>
+				<div class="help" >Choose number of adjacents, Press down + hold the left mouse key in the center of the poligon, and drag to define your radius, release the key to draw.</div>	
+			</li>
+			
+			<li class="static" >Config</li>
+			<li>Color <input id="global-color" type="color"  /></li>
+			<li id="clear" >clear</li>
+			<li>
+				<button id="Save">"asd"</button>
+			</li>
+		</ul>
+		
+	</body>
+	<script src="js/readfile.js"></script>
+	<script type="text/javascript">
+	$("#asd").on("click",WriteToFile);
+	 function WriteToFile(passForm) {
+	 	var json = {}
+	 	json.shapes = []
+	 	for (var i = 0; i < myShapes.length; i++) {
+	 		var s = {};
+	 		s.shape = myShapes[i].name;
+	 		$.each(myShapes[i], function(index, value) {
+	 			if (typeof value != "function"){
+	 				s[index] = value;	
+	 			}
+			}); 
+	 		
+	 		json.shapes.push(s);
+	 		console.log(json);
+	 	};
+	 	
+	}
+</script>
+</html>

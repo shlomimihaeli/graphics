@@ -1,0 +1,26 @@
+{"shapes":
+	[
+		{
+			"shape":"circle",
+			"point":{"x":300,"y":300},
+			"radius":50,
+			"color":"red"
+		},
+		{
+			"shape":"poligon",
+			"point":{"x":700,"y":250},
+			"numEdges":7,
+			"radius":80,
+			"color":"blue"
+		},
+		{
+			"shape":"line",
+			"points":[{"x":500,"y":250},{"x":600,"y":350}],
+			"color":"green"
+		},
+		{
+			"shape":"curv",
+			"points":[{"x":500,"y":250},{"x":600,"y":350},{"x":700,"y":450},{"x":200,"y":500}],
+			"color":"yellow"
+		}
+	]
