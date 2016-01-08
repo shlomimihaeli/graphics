@@ -88,8 +88,5 @@ pic.draw();
 
 setInterval(function(){
 	
-	//shapes[0].rotate({x:800, y:200}, 5);
-	//shapes[1].rotate({x:800, y:200}, 5);
-	//shapes[2].rotate({x:800, y:200}, 5);
-	//shapes[3].rotate({x:800, y:200}, 5);
+	//pic.rotate(10);
 },100);

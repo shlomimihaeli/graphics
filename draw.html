@@ -23,7 +23,7 @@
 		
 		<ul id="menu" >
 			<li class="static" >Shapes</li>
-			<li class="shape" shape="line" >Line
+			<!--<li class="shape" shape="line" >Line
 				
 				<div class="help" >Press down + hold the left mouse key, and drag to create a line, release the key to draw.</div>	
 			</li>
@@ -39,15 +39,19 @@
 				</div>
 				<div class="help" >Choose number of adjacents, Press down + hold the left mouse key in the center of the poligon, and drag to define your radius, release the key to draw.</div>	
 			</li>
-			
-			<li class="static" >Config</li>
-			<li>Color <input id="global-color" type="color"  /></li>
+			<li>Color <input id="global-color" type="color"/></li>
+		-->
+			<li class="static" >Transformations</li>
+			<li>Move X<input id="global-move" type="range" min="-800" max="800" defaultValue="0" step="10"></li>
+			<li>Move Y<input id="global-move-y" type="range" min="-800" max="800" defaultValue="0" step="10"></li>
+			<li>Rotate <input id="global-rotate" type="text" placeholder="degrees" /><input type="button" value="rotate" onclick="pic.rotate($('#global-rotate').val()*-1)" /></li>
+			<li>Scale <input id="global-scale" type="range" min="0.7" max="1.3" defaultValue="1" step="0.05"></li>
+			<li>Shear <input id="global-shear" type="range" min="-0.3" max="0.3" defaultValue="0" step="0.01"></li>
 			<li id="clear" >clear</li>
-			<li>
-				<button id="Save">"asd"</button>
-			</li>
+			<li onclick="alert(JSON.stringify(pic.shapes))" >Export</li>
+			
 		</ul>
-		
+		<!-- הריזג -->
 	</body>
 	<script src="js/readfile.js"></script>
 	<script type="text/javascript">

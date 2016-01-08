@@ -57,6 +57,34 @@
 					
 					global_color = ($(this).val() != "" ) ? $(this).val() : "#000";
 				});
+    			var last_pos = 0;
+    			$('#global-move').change( function(e){
+    				for (i=0; i<shapes.length;i++){
+						shapes[i].move($('#global-move').val()-last_pos,0);
+					}
+					last_pos = $('#global-move').val();
+        			console.log	($('#global-move').val());
+    			});
+    			$('#global-move-y').change( function(e){
+    				for (i=0; i<shapes.length;i++){
+						shapes[i].move(0, $(this).val()-last_pos);
+					}
+					last_pos = $(this).val();
+        			console.log	($(this).val());
+    			});
+
+    			
+    			$('#global-scale').change( function(e){
+    				for (i=0; i<shapes.length;i++){
+						shapes[i].scale($('#global-scale').val(),0);
+					}
+    			});
+
+    			$('#global-shear').change( function(e){
+    				for (i=0; i<shapes.length;i++){
+						shapes[i].shear($('#global-shear').val(),0);
+					}
+    			});
 				
 				$("#clear").click(function(){
 					

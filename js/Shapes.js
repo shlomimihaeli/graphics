@@ -25,32 +25,40 @@ Shape.prototype.setPoint = function(x,y){
 
 Shape.prototype.rotate = function(ref_point, angle){
 	
+	this.setPoint(rotatePoint(this.getPoint(), ref_point, angle));
+};
+
+
+
+/**
+ * return a new point after rotation
+ */
+function rotatePoint(p, ref_p, angle){
+	
+	
 	//convert to radians
 	//this is the anle to add to currrent angle
 	angle = angle*Math.PI/180;
 	
-	var x = this.getPoint().x - ref_point.x;
-	var y = this.getPoint().y - ref_point.y;
-	var initial_angle = Math.atan2(x,y);
-	
-	console.log("current angle in degrees "+(initial_angle*180/Math.PI));
+	var x = p.x - ref_p.x;
+	var y = p.y - ref_p.y;
 	var r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
-	console.log("radius: "+r);
+	var initial_angle = Math.atan2(x,y);
 	var f_angle = initial_angle + angle;
+	var xt = r*Math.sin(f_angle);
+	var yt = r*Math.cos(f_angle);
 	
-	console.log("final angle in degrees "+(f_angle*180/Math.PI));
-	
-	xt = r*Math.sin(f_angle);
-	yt = r*Math.cos(f_angle);
-	
-	this.setPoint(xt + ref_point.x, yt + ref_point.y);
-};
+	return {x:xt,y:yt};
+}
+
 
 Shape.prototype.move = function(difx, dify){
 	
 	this.setPoint(this.getPoint().x + difx, this.getPoint().y + dify);
 };
-
+Shape.prototype.scale = function(from, diff){
+	throw "not imp";
+};
 Shape.prototype.getLeft = function(){
 	
 	if(this.point != undefined) return this.point.x;
@@ -135,6 +143,23 @@ function Circle(point,radius,color){
 
 Circle.prototype = Object.create(Shape.prototype);
 
+Circle.prototype.scale = function(diff){
+	this.radius *= diff;
+	if (diff > 1){
+		this.move(this.point.x*(diff-1),this.point.y*(diff-1));	
+	}else{
+		this.move(-(this.point.x*(1-diff)),-(this.point.y*(1-diff)));	
+	}
+	this.clear();
+	this.draw();
+};
+
+Circle.prototype.shear = function(diff){
+	this.move(this.point.x*(diff+1),0);	
+	this.clear();
+	this.draw();
+};
+
 Circle.prototype.getLeft = function(){
 	
 	return this.point.x - this.radius;
@@ -153,6 +178,12 @@ Circle.prototype.getTop = function(){
 Circle.prototype.getBottom = function(){
 	
 	return this.point.y + this.radius;
+};
+Circle.prototype.rotate = function(ref,a){
+	
+	this.clear();
+	this.point = rotatePoint(this.point, ref,a);
+	this.draw();
 };
 
 Circle.prototype.draw = function(preview){
@@ -261,6 +292,22 @@ Line.prototype.move = function(difx, dify){
 	this.draw();
 };
 
+Line.prototype.scale = function(diff){
+	this.points[0].x =parseInt(this.points[0].x)*diff;
+	this.points[0].y =parseInt(this.points[0].y)*diff;
+	this.points[1].x =parseInt(this.points[1].x)*diff;
+	this.points[1].y =parseInt(this.points[1].y)*diff;
+	this.clear();
+	this.draw();
+};
+
+Line.prototype.shear = function(diff){
+	this.points[0].x = this.points[0].x+(diff*this.points[0].y);
+	this.points[1].x = this.points[1].x+(diff*this.points[1].y);
+	this.clear();
+	this.draw();
+};
+
 Line.prototype.setPoint = function(x,y){
 
 	this.clear();
@@ -292,6 +339,16 @@ Line.prototype.getTop = function(){
 Line.prototype.getBottom = function(){
 	
 	return (this.points[0].y > this.points[1].y) ? this.points[0].y : this.points[1].y;
+};
+
+Line.prototype.rotate = function(ref_point, angle){
+	
+	this.clear();
+	
+	this.points[0] = rotatePoint(this.points[0], ref_point, angle);
+	this.points[1] = rotatePoint(this.points[1], ref_point, angle);
+	
+	this.draw();
 };
 
 
@@ -483,7 +540,7 @@ Container.prototype.rotate = function(angle){
 	
 	for(s in this.shapes){
 		
-		this.shapes[s].rotate(this.getPoint(true), angle);
+		this.shapes[s].rotate({x:0,y:0}, angle);
 	}
 };
 Container.prototype.draw = function(angle){
