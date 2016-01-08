@@ -24,14 +24,18 @@ window.onload = function() {
 								myShapes.push(new Poligon(s.point, s.radius, s.numEdges, s.color));
 								break;
 							case "line":
-								myShapes.push(new Line(s.points, s.color));
+								myShapes.push(new Line(s.points[0], s.points[1], s.color));
 								break;
 							case "curv":
 								myShapes.push(new Curv(s.points,s.color));
 								break;
 						}
-						myShapes[myShapes.length-1].draw();
+						//myShapes[myShapes.length-1].draw();
 					};
+					shapes = myShapes;
+					pic = new Container(myShapes);
+
+					pic.draw();
 				}
 				reader.readAsText(file);	
 			} else {
@@ -65,7 +69,7 @@ function jsonToShapes(data){
 	return myShapes;
 }
 
-shapes = jsonToShapes(JSON.parse('{"shapes": [ { "shape":"circle", "point":{"x":300,"y":300}, "radius":50, "color":"red" },{ "shape":"circle", "point":{"x":100,"y":300}, "radius":50, "color":"red" }, { "shape":"poligon", "point":{"x":700,"y":250}, "numEdges":7, "radius":80, "color":"blue" }, { "shape":"line", "points":[{"x":500,"y":250},{"x":600,"y":350}], "color":"green" }, { "shape":"curv", "points":[{"x":500,"y":250},{"x":600,"y":350},{"x":700,"y":450},{"x":200,"y":500}], "color":"orange" } ] }'));
+/*shapes = jsonToShapes(JSON.parse('{"shapes": [ { "shape":"circle", "point":{"x":300,"y":300}, "radius":50, "color":"red" },{ "shape":"circle", "point":{"x":100,"y":300}, "radius":50, "color":"red" }, { "shape":"poligon", "point":{"x":700,"y":250}, "numEdges":7, "radius":80, "color":"blue" }, { "shape":"line", "points":[{"x":500,"y":250},{"x":600,"y":350}], "color":"green" }, { "shape":"curv", "points":[{"x":500,"y":250},{"x":600,"y":350},{"x":700,"y":450},{"x":200,"y":500}], "color":"orange" } ] }'));
 
 shapes = jsonToShapes({"shapes":[
 
@@ -81,12 +85,11 @@ shapes = jsonToShapes({"shapes":[
 	{"shape":"circle", "point":{x:390,y:350}, radius:20},
 ]});
 
-pic = new Container(shapes);
 
-pic.draw();
 //pic.move(10,0);
 
 setInterval(function(){
 	
 	//pic.rotate(10);
 },100);
+*/
