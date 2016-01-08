@@ -23,6 +23,29 @@ Shape.prototype.setPoint = function(x,y){
 	this.draw();
 };
 
+Shape.prototype.rotate = function(ref_point, angle){
+	
+	//convert to radians
+	//this is the anle to add to currrent angle
+	angle = angle*Math.PI/180;
+	
+	var x = this.getPoint().x - ref_point.x;
+	var y = this.getPoint().y - ref_point.y;
+	var initial_angle = Math.atan2(x,y);
+	
+	console.log("current angle in degrees "+(initial_angle*180/Math.PI));
+	var r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+	console.log("radius: "+r);
+	var f_angle = initial_angle + angle;
+	
+	console.log("final angle in degrees "+(f_angle*180/Math.PI));
+	
+	xt = r*Math.sin(f_angle);
+	yt = r*Math.cos(f_angle);
+	
+	this.setPoint(xt + ref_point.x, yt + ref_point.y);
+};
+
 Shape.prototype.move = function(difx, dify){
 	
 	this.setPoint(this.getPoint().x + difx, this.getPoint().y + dify);
@@ -33,9 +56,19 @@ Shape.prototype.getLeft = function(){
 	if(this.point != undefined) return this.point.x;
 };
 
+Shape.prototype.getRight = function(){
+	
+	if(this.point != undefined) return this.point.x;
+};
+
 Shape.prototype.getTop = function(){
 	
 	if(this.point != undefined) return this.point.y;
+};
+
+Shape.prototype.getWidth = function(){
+	
+	return this.getRight() - this.getLeft();
 };
 
 /**
@@ -107,9 +140,19 @@ Circle.prototype.getLeft = function(){
 	return this.point.x - this.radius;
 };
 
+Circle.prototype.getRight = function(){
+	
+	return this.point.x + this.radius;
+};
+
 Circle.prototype.getTop = function(){
 	
 	return this.point.y - this.radius;
+};
+
+Circle.prototype.getBottom = function(){
+	
+	return this.point.y + this.radius;
 };
 
 Circle.prototype.draw = function(preview){
@@ -156,9 +199,19 @@ Poligon.prototype.getLeft = function(){
 	return this.point.x - this.radius;
 };
 
+Poligon.prototype.getRight = function(){
+	
+	return this.point.x + this.radius;
+};
+
 Poligon.prototype.getTop = function(){
 	
 	return this.point.y - this.radius;
+};
+
+Poligon.prototype.getBottom = function(){
+	
+	return this.point.y + this.radius;
 };
 
 Poligon.prototype.draw = function(preview){
@@ -199,7 +252,13 @@ Line.prototype = Object.create(Shape.prototype);
 
 Line.prototype.move = function(difx, dify){
 	
-	this.setPoint(this.getPoint().x + difx, this.getPoint().y + dify);
+	this.points[0].x += difx;
+	this.points[1].x += difx;
+	this.points[1].y += dify;
+	this.points[0].y += dify;
+	
+	this.clear();
+	this.draw();
 };
 
 Line.prototype.setPoint = function(x,y){
@@ -220,9 +279,19 @@ Line.prototype.getLeft = function(){
 	return (this.points[0].x < this.points[1].x) ? this.points[0].x : this.points[1].x;
 };
 
+Line.prototype.getRight = function(){
+	
+	return (this.points[0].x > this.points[1].x) ? this.points[0].x : this.points[1].x;
+};
+
 Line.prototype.getTop = function(){
 	
 	return (this.points[0].y < this.points[1].y) ? this.points[0].y : this.points[1].y;
+};
+
+Line.prototype.getBottom = function(){
+	
+	return (this.points[0].y > this.points[1].y) ? this.points[0].y : this.points[1].y;
 };
 
 
@@ -263,32 +332,24 @@ function Curv(points, color){
 	this.points = points;
 	this.color = color;
 	this.name = "Curv";
+	this.border = {top:-1, bottom:-1,left:-1, right:-1};
 }
 
 Curv.prototype = Object.create(Shape.prototype);
 
 Curv.prototype.getLeft = function(){
 	
-	var min=1000000000;
-	for(i in this.points){
-		
-		if(this.points[i].x < min)
-			min = this.points[i].x;
-	}
-	
-	return min;
+	return this.border.left;
 };
 
 Curv.prototype.getTop = function(){
 	
-	var min=1000000000;
-	for(i in this.points){
-		
-		if(this.points[i].y < min)
-			min = this.points[i].y;
-	}
+	return this.border.top;
+};
+
+Curv.prototype.getBottom = function(){
 	
-	return min;
+	return this.border.bottom;
 };
 
 Curv.prototype.setPoint = function(x,y){
@@ -317,6 +378,7 @@ Curv.prototype.draw = function(preview){
 	var prev_point = undefined;
 	var xt, yt;
 	
+	
 	for(var t=0; t <= 1; t+=delta){
 		
 		var t3 = Math.pow(t,3);
@@ -328,6 +390,10 @@ Curv.prototype.draw = function(preview){
 		 */
 		xt = Math.pow((1-t),3) * a.x + Math.pow((1-t),2)*3*t*b.x + 3*(1-t)*Math.pow(t,2)*c.x + d.x*Math.pow(t,3);
 		yt = Math.pow((1-t),3) * a.y + Math.pow((1-t),2)*3*t*b.y + 3*(1-t)*Math.pow(t,2)*c.y + d.y*Math.pow(t,3);
+		if(xt > this.border.right || this.border.right == -1) this.border.right = xt;
+		if(xt < this.border.left || this.border.left == -1) this.border.left = xt;
+		if(yt > this.border.bottom || this.border.bottom == -1) this.border.bottom = yt;
+		if(yt < this.border.top || this.border.top == -1) this.border.top = yt;
 		
 		if(prev_point != undefined){
 			Line.prototype.draw.call(this, preview, false, prev_point, {x:xt, y:yt});
@@ -340,5 +406,92 @@ Curv.prototype.draw = function(preview){
 	}
 };
 
+Curv.prototype.getRight = function(){
+	
+	return this.border.right;
+};
+
+function Container(shapes){
+	
+	this.shapes = (shapes == undefined) ? [] : shapes;
+}
+
+Container.prototype.move = function(difx, dify){
+	
+	for(i in this.shapes) this.shapes[i].move(difx, dify);
+};
+
+Container.prototype.getLeft = function(){
+	
+	var min = 1000000000;
+	for(s in this.shapes){
+		
+		if(this.shapes[s].getLeft() < min)
+			min = this.shapes[s].getLeft();
+	}
+	
+	return min;
+};
+
+Container.prototype.getTop = function(){
+	
+	var min = 1000000000;
+	for(s in this.shapes){
+		
+		if(this.shapes[s].getTop() < min)
+			min = this.shapes[s].getTop();
+	}
+	
+	return min;
+};
+
+Container.prototype.getRight = function(){
+	
+	var max = 0;
+	for(s in this.shapes){
+		
+		if(this.shapes[s].getLeft() > max)
+			max = this.shapes[s].getLeft();
+	}
+	
+	return max;
+};
+
+Container.prototype.getBottom = function(){
+	
+	var max = 0;
+	for(s in this.shapes){
+		
+		if(this.shapes[s].getBottom() > max)
+			max = this.shapes[s].getBottom();
+	}
+	
+	return max;
+};
+
+Container.prototype.getPoint = function(middle){
+	
+	return (middle) ? {x:(this.getRight()-this.getLeft())/2, y:(this.getBottom()-this.getTop())/2} : {x:this.getLeft(), y:this.getTop()};
+};
+
+/**
+ * rotate container
+ * rotate all container shapes in relation to container referrence point - middle
+ * @param {Object} angle - the angle of rotation in degrees
+ */
+Container.prototype.rotate = function(angle){
+	
+	for(s in this.shapes){
+		
+		this.shapes[s].rotate(this.getPoint(true), angle);
+	}
+};
+Container.prototype.draw = function(angle){
+	
+	for(s in this.shapes){
+		
+		this.shapes[s].draw();
+	}
+};
 
 

@@ -7,6 +7,12 @@
 			"color":"red"
 		},
 		{
+			"shape":"circle",
+			"point":{"x":100,"y":300},
+			"radius":50,
+			"color":"red"
+		},
+		{
 			"shape":"poligon",
 			"point":{"x":700,"y":250},
 			"numEdges":7,
